@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:travel_app_ui/screens/activity_screen.dart';
+import 'package:travel_app_ui/screens/hotels_screen.dart';
+import 'package:travel_app_ui/widgets/side_bar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -7,17 +10,60 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(),
+      debugShowCheckedModeBanner: false,
+      title: "Travel App UI",
+      initialRoute: '/activities',
+      routes: {
+        ActivitiesScreen.routeName: (context) => const ActivitiesScreen(),
+        HotelsScreen.routeName: (context) => const HotelsScreen(),
+      },
+      builder: (context, child) {
+        return _TravelApp(
+          navigator: (child!.key as GlobalKey<NavigatorState>),
+          child: child,
+        );
+      },
     );
   }
 }
 
+class _TravelApp extends StatefulWidget {
+  const _TravelApp({
+    Key? key,
+    required this.navigator,
+    required this.child,
+  }) : super(key: key);
+
+  final GlobalKey<NavigatorState> navigator;
+  final Widget child;
+
+  @override
+  State<_TravelApp> createState() => _TravelAppState();
+}
+
+class _TravelAppState extends State<_TravelApp> {
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5EDDC),
+      body: Row(
+        children: [
+          SideBar(
+            width: width,
+            height: height,
+            navigator: widget.navigator,
+          ),
+          Expanded(
+            child: widget.child,
+          )
+        ],
+      ),
+    );
+  }
+}
